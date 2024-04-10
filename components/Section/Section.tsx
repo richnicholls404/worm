@@ -15,7 +15,7 @@ export default function Section({
   subtitle,
   headingProps = {},
   size,
-  bgColor = "default",
+  bgColor = "light",
   renderSizeContainer = true,
   renderStyleContainer = true,
   children,
@@ -25,7 +25,6 @@ export default function Section({
     headingProps?: Omit<SectionHeadingProps, "title" | "subtitle">;
     renderSizeContainer?: boolean;
     renderStyleContainer?: boolean;
-    bgColor?: "light" | "dark" | "default";
     children: React.ReactNode;
   }) {
   const sectionContent = useMemo(() => {

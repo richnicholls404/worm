@@ -162,7 +162,11 @@ export default function CreateBook() {
       <Header />
 
       <Section title="Create book" subtitle="Creative people" bgColor="light">
-        s
+        <div className="grid gap-6">
+          {bookData.pages.map((page, index) => (
+            <div key={index} className="border border-gray-200 p-4 mb-4"></div>
+          ))}
+        </div>
       </Section>
 
       <Footer />
