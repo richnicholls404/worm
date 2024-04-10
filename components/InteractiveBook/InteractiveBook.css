@@ -1,0 +1,9 @@
+.stf__item {
+  overflow: hidden;
+}
+.stf__item.--right {
+  box-shadow: inset 7px 0 30px -7px rgba(0,0,0,.3), inset 1px 0 rgba(0,0,0,.1);
+}
+.stf__item.--left {
+  box-shadow: inset -7px 0 30px -7px rgba(0,0,0,.3);
+}

@@ -1,20 +1,67 @@
+import { useMemo } from "react";
+
+import SectionSizeContainer, {
+  SectionSizeContainerProps,
+} from "./SectionSizeContainer";
 import SectionHeading, { SectionHeadingProps } from "./SectionHeading";
+import SectionStyleContainer, {
+  SectionStyleContainerProps,
+} from "./SectionStyleContainer";
+
+export { SectionSizeContainer, SectionStyleContainer, SectionHeading };
 
 export default function Section({
   title,
   subtitle,
+  headingProps = {},
+  size,
   bgColor = "default",
+  renderSizeContainer = true,
+  renderStyleContainer = true,
   children,
-}: SectionHeadingProps & {
-  bgColor?: "dark" | "default" | "light";
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className={`max-w-[85rem] px-8 py-10 sm:px-10 lg:px-12 lg:py-14 mx-auto ${bgColor === "light" ? `bg-slate-100 dark:bg-slate-900` : bgColor === "dark" ? `bg-slate-300 dark:bg-slate-700` : `bg-slate-200 dark:bg-slate-800`}`}
-    >
-      <SectionHeading title={title} subtitle={subtitle} />
-      {children}
-    </div>
-  );
+}: Pick<SectionHeadingProps, "title" | "subtitle"> &
+  SectionStyleContainerProps &
+  SectionSizeContainerProps & {
+    headingProps?: Omit<SectionHeadingProps, "title" | "subtitle">;
+    renderSizeContainer?: boolean;
+    renderStyleContainer?: boolean;
+    bgColor?: "light" | "dark" | "default";
+    children: React.ReactNode;
+  }) {
+  const sectionContent = useMemo(() => {
+    const contentWithHeading = (
+      <>
+        {title && (
+          <SectionHeading title={title} subtitle={subtitle} {...headingProps} />
+        )}
+        {children}
+      </>
+    );
+
+    const contentWithSizeContainer = renderSizeContainer ? (
+      <SectionSizeContainer size={size}>
+        {contentWithHeading}
+      </SectionSizeContainer>
+    ) : (
+      contentWithHeading
+    );
+    const contentWithStyleContainer = renderStyleContainer ? (
+      <SectionStyleContainer bgColor={bgColor}>
+        {contentWithSizeContainer}
+      </SectionStyleContainer>
+    ) : (
+      contentWithSizeContainer
+    );
+
+    return contentWithStyleContainer;
+  }, [
+    title,
+    subtitle,
+    children,
+    renderSizeContainer,
+    renderStyleContainer,
+    bgColor,
+  ]);
+
+  return sectionContent;
 }

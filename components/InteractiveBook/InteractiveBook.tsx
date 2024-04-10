@@ -1,24 +1,32 @@
 "use client";
 
+import { Book } from "@prisma/client";
 import HTMLFlipBook from "react-pageflip";
 
-export default function InteractiveBook() {
+import "./InteractiveBook.css";
+
+const MIN_WIDTH = 300;
+const MIN_HEIGHT = 300;
+
+export default function InteractiveBook({ book }: { book: Book }) {
+  const pages = 10;
   return (
-    <div>
-      <HTMLFlipBook width={100} height={100} showCover size="stretch">
-        <div className="demoPage bg-slate-300">Page 1</div>
-        <div className="demoPage bg-slate-400">Page 2</div>
-        <div className="demoPage bg-slate-500">Page 3</div>
-        <div className="demoPage bg-slate-600">Page 4</div>
-        <div className="demoPage bg-slate-700">Page 5</div>
-        <div className="demoPage bg-slate-800">Page 6</div>
-        <div className="demoPage bg-slate-300">Page 1</div>
-        <div className="demoPage bg-slate-400">Page 2</div>
-        <div className="demoPage bg-slate-500">Page 3</div>
-        <div className="demoPage bg-slate-600">Page 4</div>
-        <div className="demoPage bg-slate-700">Page 5</div>
-        <div className="demoPage bg-slate-800">Page 6</div>
-      </HTMLFlipBook>
-    </div>
+    <HTMLFlipBook
+      width={MIN_WIDTH}
+      height={MIN_HEIGHT}
+      showCover
+      size="stretch"
+      minWidth={MIN_WIDTH}
+      minHeight={MIN_HEIGHT}
+    >
+      {Array.from({ length: pages }).map((_, index) => (
+        <div
+          key={index}
+          className="bg-slate-50 text-slate-900 content-center text-center"
+        >
+          Page {index + 1}
+        </div>
+      ))}
+    </HTMLFlipBook>
   );
 }

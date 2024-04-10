@@ -1,1 +1,6 @@
-export { default } from "./Section";
+export {
+  default,
+  SectionStyleContainer,
+  SectionSizeContainer,
+  SectionHeading,
+} from "./Section";
