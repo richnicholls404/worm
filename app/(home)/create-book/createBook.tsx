@@ -1,173 +1,126 @@
 "use client";
 
+import { useCallback } from "react";
+import { Tldraw, Editor } from "tldraw";
+
+import FullscreenContainer from "@/components/FullscreenContainer";
 import Header from "@/components/Header";
-import Section from "@/components/Section";
+import Section, { SectionStyleContainer } from "@/components/Section";
 import Footer from "@/components/Footer";
 
-type ImageData = {
-  type: "image";
-  src: string;
+import getTLDrawSettings from "./getTLDrawSettings";
+
+import "./createBook.css";
+
+const { components, overrides, overrideColors } = getTLDrawSettings();
+overrideColors();
+
+const BOOK_SIZE_PX = {
+  w: 1000,
+  h: 1000,
+};
+const GUTTER_TOP_PX = 0;
+const GUTTER_BOTTOM_PX = 116;
+const PADDING_PX = 8;
+
+let lastSize: {
   x: number;
   y: number;
-  width: number;
-  height: number;
+  w: number;
+  h: number;
+  z: number;
 };
+const onResize = (editor: Editor) => {
+  const currentSize = editor.getViewportScreenBounds();
+  const cameraZoom = editor.getCamera().z;
 
-type TextData = {
-  type: "text";
-  text: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
+  // should update camera?
+  if (
+    !lastSize ||
+    lastSize.w !== currentSize.w ||
+    lastSize.h !== currentSize.h ||
+    lastSize.z !== cameraZoom
+  ) {
+    // calculate camera position relative to book outline
+    const containerHeightPx = currentSize.h;
+    const containerWidthPx = currentSize.w;
+    const maxBookHeightPx =
+      containerHeightPx - GUTTER_TOP_PX - GUTTER_BOTTOM_PX - PADDING_PX * 2;
+    const bookWidthPx = (BOOK_SIZE_PX.w / BOOK_SIZE_PX.h) * maxBookHeightPx;
+    const newCameraZoom = maxBookHeightPx / BOOK_SIZE_PX.h;
 
-type PageData = {
-  blocks: (TextData | ImageData)[];
-  showPageNumber: boolean;
-};
-
-interface BookData {
-  title: string | undefined;
-  pages: PageData[];
-  draft: boolean;
-  size: [number, number];
-}
-
-const PAGE_PADDING = 100;
-const ITEM_PADDING = 50;
-
-const addBlankPage = (): PageData => ({
-  blocks: [],
-  showPageNumber: true,
-});
-
-const addThreeVerticalTextPage = ([
-  bookWidth,
-  bookHeight,
-]: BookData["size"]): PageData => {
-  const blockWidth = bookWidth - PAGE_PADDING * 2;
-  const blockHeight = (bookHeight - PAGE_PADDING * 2 - ITEM_PADDING * 2) / 3;
-  return {
-    blocks: [
+    // set camera
+    editor.setCamera(
       {
-        type: "text",
-        text: "",
-        x: PAGE_PADDING,
-        y: PAGE_PADDING,
-        width: blockWidth,
-        height: blockHeight,
+        x: (containerWidthPx - bookWidthPx) / 2 / newCameraZoom,
+        y: (GUTTER_TOP_PX + PADDING_PX) / newCameraZoom,
+        z: newCameraZoom,
       },
-      {
-        type: "text",
-        text: "",
-        x: PAGE_PADDING,
-        y: blockHeight + PAGE_PADDING + ITEM_PADDING,
-        width: blockWidth,
-        height: blockHeight,
-      },
-      {
-        type: "text",
-        text: "",
-        x: PAGE_PADDING,
-        y: blockHeight * 2 + PAGE_PADDING + ITEM_PADDING * 2,
-        width: blockWidth,
-        height: blockHeight,
-      },
-    ],
-    showPageNumber: true,
-  };
-};
+      { duration: 0 }
+    );
 
-const addCentralTextPage = ([
-  bookWidth,
-  bookHeight,
-]: BookData["size"]): PageData => ({
-  blocks: [
-    {
-      type: "text",
-      text: "",
-      x: PAGE_PADDING,
-      y: PAGE_PADDING,
-      width: bookWidth - PAGE_PADDING * 2,
-      height: bookHeight - PAGE_PADDING * 2,
-    },
-  ],
-  showPageNumber: true,
-});
-
-const addFullImagePage = ([
-  bookWidth,
-  bookHeight,
-]: BookData["size"]): PageData => ({
-  blocks: [
-    {
-      type: "image",
-      src: "",
-      x: 0,
-      y: 0,
-      width: bookWidth,
-      height: bookHeight,
-    },
-  ],
-  showPageNumber: true,
-});
-
-const addTitleAndContentPage = ([
-  bookWidth,
-  bookHeight,
-]: BookData["size"]): PageData => {
-  const blockWidth = bookWidth - PAGE_PADDING * 2;
-  const titleHeight = 20;
-  return {
-    blocks: [
-      {
-        type: "text",
-        text: "",
-        x: PAGE_PADDING,
-        y: PAGE_PADDING,
-        width: blockWidth,
-        height: titleHeight,
-      },
-      {
-        type: "text",
-        text: "",
-        x: PAGE_PADDING,
-        y: PAGE_PADDING + titleHeight + ITEM_PADDING,
-        width: blockWidth,
-        height: bookHeight - titleHeight - PAGE_PADDING * 2 - ITEM_PADDING,
-      },
-    ],
-    showPageNumber: true,
-  };
+    // update last size
+    lastSize = {
+      ...currentSize,
+      z: newCameraZoom,
+    };
+  }
 };
 
 export default function CreateBook() {
-  const bookSize: BookData["size"] = [1000, 1000];
-  const bookData: BookData = {
-    title: undefined,
-    draft: true,
-    size: bookSize,
-    pages: [
-      addTitleAndContentPage(bookSize),
-      addThreeVerticalTextPage(bookSize),
-      addBlankPage(),
-      addCentralTextPage(bookSize),
-      addFullImagePage(bookSize),
-    ],
-  };
+  const handleMount = useCallback((editor: Editor) => {
+    console.log("editor mounted", editor);
+
+    // disable camera movement
+    editor.updateInstanceState({ canMoveCamera: false });
+
+    // listen for changes to the size of the instance
+    editor.store.listen(({ changes, ...rest }) => {
+      //   console.log("editor.store.listen", { changes, rest });
+
+      // new page added
+      const newPageAdded = Object.values(changes.added).find(
+        ({ typeName }) => typeName === "page"
+      );
+      if (newPageAdded) {
+        onResize(editor);
+      }
+
+      // instance change (size change)
+      const instanceChanged = changes.updated["instance:instance"];
+      if (instanceChanged) {
+        onResize(editor);
+      }
+    });
+  }, []);
 
   return (
     <div>
       <Header />
-
-      <Section title="Create book" subtitle="Creative people" bgColor="light">
-        <div className="grid gap-6">
-          {bookData.pages.map((page, index) => (
-            <div key={index} className="border border-gray-200 p-4 mb-4"></div>
-          ))}
-        </div>
-      </Section>
+      <SectionStyleContainer bgColor="light">
+        <FullscreenContainer>
+          <Section
+            title="Create book"
+            subtitle="Creative people"
+            bgColor="light"
+          >
+            <div
+              style={{
+                height: "70vh",
+                // minHeight: 500,
+              }}
+            >
+              <Tldraw
+                onMount={handleMount}
+                maxAssetSize={10000000}
+                components={components}
+                overrides={overrides}
+                forceMobile
+              />
+            </div>
+          </Section>
+        </FullscreenContainer>
+      </SectionStyleContainer>
 
       <Footer />
     </div>

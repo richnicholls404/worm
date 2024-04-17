@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;700;&display=swap");
+@import url("tldraw/tldraw.css");
+
+body {
+  font-family: "Inter";
+}
+.tlui-style-panel {
+    width: auto !important;
+}
+.tlui-page-menu__wrapper {
+    width: 140px !important;
+}
+.tlui-page-menu__trigger {
+    width: 100% !important;
+}
+.tlui-button[data-testid="page-menu.rename"],
+.tlui-button[data-testid="page-menu.edit"],
+.tlui-button[data-id="pattern"] {
+    display: none;
+}
+.tl-theme__light {
+    --color-background: #DDD !important;
+}
+.tl-theme__dark {
+    --color-background: #222 !important;
+}
