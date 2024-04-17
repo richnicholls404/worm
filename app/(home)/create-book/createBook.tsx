@@ -87,6 +87,7 @@ export default function CreateBook() {
       }
 
       // instance change (size change)
+      // @ts-ignore
       const instanceChanged = changes.updated["instance:instance"];
       if (instanceChanged) {
         onResize(editor);
@@ -107,7 +108,6 @@ export default function CreateBook() {
             <div
               style={{
                 height: "70vh",
-                // minHeight: 500,
               }}
             >
               <Tldraw

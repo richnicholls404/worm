@@ -10,7 +10,8 @@ const navigation = [
   { name: "Authors", href: urls.authors() },
   { name: "Books", href: urls.books() },
   {
-    name: (
+    name: "About",
+    render: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -115,7 +116,7 @@ export default function Header() {
                     href={item.href}
                     className={`font-medium sm:py-6 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 ${pathname === item.href ? "text-blue-600 dark:text-blue-500" : "text-gray-500 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500"}`}
                   >
-                    {item.name}
+                    {item.render || item.name}
                   </Link>
                 ))}
               </div>
