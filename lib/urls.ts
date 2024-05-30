@@ -8,7 +8,7 @@ const urls = {
   myBooks: () => `/my-books`,
   books: () => `/books`,
   book: (id: string) => `/book/${id}`,
-  createBook: (id: string) => `/create-book`,
+  createBook: (id?: string) => `/create-book`,
   editBook: (id: string) => `/create-book/${id}`,
 };
 

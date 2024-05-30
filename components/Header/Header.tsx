@@ -53,7 +53,7 @@ export default function Header() {
                 href={urls.home()}
                 aria-label="Brand"
               >
-                Sahara
+                Look-a-Book
               </a>
               <div className="sm:hidden">
                 <button
@@ -135,7 +135,7 @@ export default function Header() {
               </p>
               <a
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border-2 border-white text-white hover:border-white/70 hover:text-white/70 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                href="#"
+                href={urls.createBook()}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

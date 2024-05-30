@@ -17,15 +17,12 @@ export default async function Books() {
     <div>
       <Header />
 
-      <Section
-        title="About Look-a-Book"
-        subtitle="It's a pet family project :)"
-        bgColor="light"
-        size="medium"
-      >
-        Look-a-Book is a pet project by Sam, Harriet and their dad Rich. It aims
-        to be a place where you can create your own books and show them off to
-        friends, family, and maybe the rest of the world too.
+      <Section title="Our books" subtitle="Creative people" bgColor="light">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {books.map((row) => (
+            <BookCard key={row.id} book={row} />
+          ))}
+        </div>
       </Section>
 
       <Footer />

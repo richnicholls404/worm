@@ -11,7 +11,7 @@ export default function Footer() {
               href="#"
               aria-label="Brand"
             >
-              Sahara
+              Look-a-Book
             </a>
           </div>
 

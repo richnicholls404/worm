@@ -20,7 +20,7 @@ const BOOK_SIZE_PX = {
   h: 1000,
 };
 const GUTTER_TOP_PX = 0;
-const GUTTER_BOTTOM_PX = 116;
+const GUTTER_BOTTOM_PX = 100; // 116px with debug bar
 const PADDING_PX = 8;
 
 let lastSize: {
@@ -107,7 +107,7 @@ export default function CreateBook() {
           >
             <div
               style={{
-                height: "70vh",
+                height: "75vh",
               }}
             >
               <Tldraw
