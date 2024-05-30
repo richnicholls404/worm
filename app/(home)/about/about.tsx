@@ -1,18 +1,8 @@
 import Header from "@/components/Header";
 import Section from "@/components/Section";
 import Footer from "@/components/Footer";
-import BookCard from "@/components/BookCard";
-import { PrismaClient } from "@prisma/client";
 
-export default async function Books() {
-  const prisma = new PrismaClient();
-
-  const books = await prisma.book.findMany({
-    include: {
-      author: true,
-    },
-  });
-
+export default function Books() {
   return (
     <div>
       <Header />

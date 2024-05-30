@@ -10,6 +10,7 @@ const urls = {
   book: (id: string) => `/book/${id}`,
   createBook: (id?: string) => `/create-book`,
   editBook: (id: string) => `/create-book/${id}`,
+  login: () => `/login`,
 };
 
 export default urls;
